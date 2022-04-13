@@ -35,10 +35,8 @@ import { ConnectedRemoteVideoTile } from './ConnectedRemoteVideoTile';
         justifyContent: 'center'
       }
     };
-    const [videoButtonChecked, setVideoButtonChecked] = useState<boolean>(false);
-    const [audioButtonChecked, setAudioButtonChecked] = useState<boolean>(false);
-    const [screenshareButtonChecked, setScreenshareButtonChecked] = useState<boolean>(false);
     const videoGalleryProps = usePropsFor(VideoGallery);
+    const {cameras, checked, disabled, onToggleCamera, selectedCamera} = usePropsFor(CameraButton);
     return (
       <Stack className={mergeStyles({ height: '100%' })}>
         {/* GridLayout Component relies on the parent's height and width, so it's required to set the height and width on its parent. */}
@@ -54,14 +52,7 @@ import { ConnectedRemoteVideoTile } from './ConnectedRemoteVideoTile';
   
         {/* Control Bar with default set up */}
         <ControlBar styles={controlBarStyle}>
-          <CameraButton checked={videoButtonChecked} onClick={() => setVideoButtonChecked(!videoButtonChecked)} />
-          <MicrophoneButton checked={audioButtonChecked} onClick={() => setAudioButtonChecked(!audioButtonChecked)} />
-          <ScreenShareButton
-            checked={screenshareButtonChecked}
-            onClick={() => setScreenshareButtonChecked(!screenshareButtonChecked)}
-          />
-          <DevicesButton menuProps={exampleOptionsMenuProps} />
-          <EndCallButton />
+          <CameraButton checked={checked} disabled={disabled} onToggleCamera={onToggleCamera} selectedCamera={selectedCamera} cameras={cameras} />
         </ControlBar>
       </Stack>
     );
