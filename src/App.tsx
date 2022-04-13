@@ -1,25 +1,74 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Call, CallAgent } from '@azure/communication-calling';
+import { AzureCommunicationTokenCredential } from '@azure/communication-common';
+import {
+  FluentThemeProvider,
+  DEFAULT_COMPONENT_ICONS,
+  CallClientProvider,
+  CallAgentProvider,
+  CallProvider,
+  createStatefulCallClient,
+  StatefulCallClient
+} from '@azure/communication-react';
+import { registerIcons } from '@fluentui/react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CallingComponents } from './CallingComponents';
 
-function App() {
+function App(): JSX.Element {
+  registerIcons({ icons: DEFAULT_COMPONENT_ICONS });
+
+  const userAccessToken = '';
+  const userId = '';
+  const tokenCredential = useMemo(() => {
+    return new AzureCommunicationTokenCredential(userAccessToken);
+  }, [userAccessToken]);
+  const groupId = '';
+  const displayName = 'alex';
+
+  const [statefulCallClient, setStatefulCallClient] = useState<StatefulCallClient>();
+  const [callAgent, setCallAgent] = useState<CallAgent>();
+  const [call, setCall] = useState<Call>();
+
+  useEffect(() => {
+    setStatefulCallClient(
+      createStatefulCallClient({
+        userId: { communicationUserId: userId }
+      })
+    );
+  }, [userId]);
+
+  useEffect(() => {
+    if (callAgent === undefined && statefulCallClient) {
+      const createUserAgent = async (): Promise<void> => {
+        setCallAgent(await statefulCallClient.createCallAgent(tokenCredential, { displayName: displayName }));
+      };
+      createUserAgent();
+    }
+  }, [callAgent, statefulCallClient, tokenCredential, displayName]);
+
+  useEffect(() => {
+    if (callAgent !== undefined) {
+      setCall(callAgent.join({ groupId }));
+    }
+  }, [callAgent]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <FluentThemeProvider>
+        {statefulCallClient && (
+          <CallClientProvider callClient={statefulCallClient}>
+            {callAgent && (
+              <CallAgentProvider callAgent={callAgent}>
+                {call && (
+                  <CallProvider call={call}>
+                    <CallingComponents />
+                  </CallProvider>
+                )}
+              </CallAgentProvider>
+            )}
+          </CallClientProvider>
+        )}
+      </FluentThemeProvider>
+    </>
   );
 }
 

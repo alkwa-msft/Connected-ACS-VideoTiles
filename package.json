@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@azure/communication-calling": "latest",
+    "@azure/communication-chat": "latest",
     "@azure/communication-common": "latest",
     "@azure/communication-react": "latest",
+    "@babel/core": "^7.13.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -12,10 +15,10 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.8.0",
     "@types/react-dom": "^16.8.0",
-    "@babel/core": "^7.13.0",
     "react": "^17.0.2",
     "react-dom": "^16.8.0",
     "react-scripts": "^4.0.3",
+    "scheduler": "^0.21.0",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
